@@ -1,8 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=expenses.db"));
 
 var app = builder.Build();
 
@@ -26,7 +31,7 @@ var expenses = new List<Expense>
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -40,11 +45,11 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/ping", () => "pong");
 
-app.MapGet("/expenses", () => expenses);
+app.MapGet("/expenses", async (AppDbContext db) => await db.Expenses.ToListAsync());
 
-app.MapGet("/expenses/{id}", (int id) =>
+app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
 {
-    var expense = expenses.FirstOrDefault(e => e.Id == id);
+    var expense = await db.Expenses.FindAsync(id);
 
     if (expense is null)
     {
@@ -54,10 +59,12 @@ app.MapGet("/expenses/{id}", (int id) =>
     return Results.Ok(expense);
 });
 
-app.MapPost("/expenses", (Expense expense) =>
+app.MapPost("/expenses", async (Expense expense, AppDbContext db) =>
 {
-    expense.Id = expenses.Count == 0 ? 1 : expenses.Max(e => e.Id) + 1;
-    expenses.Add(expense);
+    db.Expenses.Add(expense);
+
+    await db.SaveChangesAsync();
+
     return Results.Created($"/expenses/{expense.Id}", expense);
 });
 
