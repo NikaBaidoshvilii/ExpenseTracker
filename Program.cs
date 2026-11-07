@@ -68,6 +68,41 @@ app.MapPost("/expenses", async (Expense expense, AppDbContext db) =>
     return Results.Created($"/expenses/{expense.Id}", expense);
 });
 
+app.MapPut("/expenses/{id}", async (int id, Expense input, AppDbContext db) =>
+{
+    var expense = await db.Expenses.FindAsync(id);
+
+    if (expense is null)
+    {
+        return Results.NotFound();
+    }
+
+    expense.Title = input.Title;
+    expense.Amount = input.Amount;
+    expense.Category = input.Category;
+    expense.Date = input.Date;
+
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+app.MapDelete("/expenses/{id}", async (int id, AppDbContext db) =>
+{
+    var expense = await db.Expenses.FindAsync(id);
+
+    if (expense is null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Expenses.Remove(expense);
+
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
