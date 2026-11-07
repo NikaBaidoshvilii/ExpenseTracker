@@ -45,7 +45,27 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/ping", () => "pong");
 
-app.MapGet("/expenses", async (AppDbContext db) => await db.Expenses.Select(e => new ExpenseResponse(e.Id, e.Title, e.Amount, e.Category, e.Date)).ToListAsync());
+app.MapGet("/expenses", async (int? month, int? year, string? category, AppDbContext db) =>
+{
+    var query = db.Expenses.AsQueryable();
+
+    if (month is not null)
+    {
+        query = query.Where(e => e.Date.Month == month);
+    }
+
+    if (year is not null)
+    {
+        query = query.Where(e => e.Date.Year == year);
+    }
+    
+    if (category is not null)
+    {
+        query = query.Where(e => e.Category.ToLower() == category.ToLower());
+    }
+
+    return await query.Select(e => new ExpenseResponse(e.Id, e.Title, e.Amount, e.Category, e.Date)).ToListAsync();
+});
 
 app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
 {

@@ -17,14 +17,18 @@ GET {{ExpenseTracker_HostAddress}}/expenses/2
 
 ###
 
+GET {{ExpenseTracker_HostAddress}}/expenses?month=9
+
+###
+
 POST {{ExpenseTracker_HostAddress}}/expenses
 Content-Type: application/json
 
 {
   "title": "Lunch",
   "amount": 12.30,
-  "category": "Food",
-  "date": "2026-11-06"
+  "category": "Tools",
+  "date": "2024-09-06"
 }
 
 ###
