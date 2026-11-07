@@ -1,10 +1,5 @@
 @ExpenseTracker_HostAddress = http://localhost:5254
 
-GET {{ExpenseTracker_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
-
 GET {{ExpenseTracker_HostAddress}}/ping
 
 ###
@@ -41,7 +36,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{ExpenseTracker_HostAddress}}/expenses/2
+PUT {{ExpenseTracker_HostAddress}}/expenses/4
 Content-Type: application/json
 
 {
@@ -53,16 +48,4 @@ Content-Type: application/json
 
 ###
 
-PUT {{ExpenseTracker_HostAddress}}/expenses/1
-Content-Type: application/json
-
-{
-  "title": "Ghost",
-  "amount": 1,
-  "category": "None",
-  "date": "2026-11-05"
-}
-
-###
-
-DELETE {{ExpenseTracker_HostAddress}}/expenses/1
+DELETE {{ExpenseTracker_HostAddress}}/expenses/7
