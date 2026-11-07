@@ -21,6 +21,14 @@ GET {{ExpenseTracker_HostAddress}}/expenses?month=9
 
 ###
 
+GET {{ExpenseTracker_HostAddress}}/expenses/summary
+
+###
+
+GET {{ExpenseTracker_HostAddress}}/expenses/summary?year=2025
+
+###
+
 POST {{ExpenseTracker_HostAddress}}/expenses
 Content-Type: application/json
 

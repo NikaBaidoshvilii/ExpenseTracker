@@ -79,6 +79,25 @@ app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
     return Results.Ok(new ExpenseResponse(expense.Id, expense.Title, expense.Amount, expense.Category, expense.Date));
 });
 
+app.MapGet("/expenses/summary", async (int? month, int? year, AppDbContext db) =>
+{
+    var query = db.Expenses.AsQueryable();
+
+    if (month is not null)
+    {
+        query = query.Where(e => e.Date.Month == month);
+    }
+
+    if (year is not null)
+    {
+        query = query.Where(e => e.Date.Year == year);
+    }
+
+    var expenses = await query.ToListAsync();
+    return expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList();
+});
+
+
 app.MapPost("/expenses", async (ExpenseRequest request, AppDbContext db) =>
 {
     var errors = ExpenseValidation.Validate(request);
@@ -182,3 +201,5 @@ static class ExpenseValidation
         return errors;
     }
 }
+
+record CategoryTotal(string Category, decimal Total);
