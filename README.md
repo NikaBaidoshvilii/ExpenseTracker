@@ -10,14 +10,16 @@ A small REST API for tracking personal expenses, built with ASP.NET Core and EF 
 
 ## Run it
 1. Install the .NET SDK (10.x)
-2. `dotnet ef database update`
-3. `dotnet run`
+2. `dotnet tool install --global dotnet-ef`
+3. `dotnet ef database update`
+4. `dotnet run`
 
 Use `ExpenseTracker.http` to try the endpoints.
 
 ## Endpoints
 | Method | Path | Description |
 |---|---|---|
+| GET | /ping | Health check, returns "pong" |
 | GET | /expenses | List expenses (optional month, year, category) |
 | GET | /expenses/{id} | Get one expense |
 | POST | /expenses | Create an expense |
