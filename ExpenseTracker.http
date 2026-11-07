@@ -13,7 +13,7 @@ GET {{ExpenseTracker_HostAddress}}/expenses
 
 ###
 
-GET {{ExpenseTracker_HostAddress}}/expenses/1
+GET {{ExpenseTracker_HostAddress}}/expenses/2
 
 ###
 
@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{ExpenseTracker_HostAddress}}/expenses/1
+PUT {{ExpenseTracker_HostAddress}}/expenses/2
 Content-Type: application/json
 
 {
