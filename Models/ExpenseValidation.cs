@@ -23,6 +23,19 @@ static class ExpenseValidation
             errors["Category"] = ["Category is required."];
         }
 
+        if (request.Date == default)
+        {
+            errors["Date"] = ["Date is required."];
+        }
+        else if (request.Date.Year < 1900)
+        {
+            errors["Date"] = ["Date must be in 1900 or later."];
+        }
+        else if (request.Date > DateOnly.FromDateTime(DateTime.Today))
+        {
+            errors["Date"] = ["Date cannot be in the future."];
+        }
+
         return errors;
     }
 }
