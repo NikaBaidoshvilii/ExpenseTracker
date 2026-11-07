@@ -6,12 +6,21 @@ static class ExpenseEndpoints
     {
         app.MapGet("/expenses", async (int? month, int? year, string? category, AppDbContext db) =>
         {
+            if (month is not null && (month < 1 || month > 12))
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["month"] = ["Month must be between 1 and 12."]
+                });
+            }
+
             var query = db.Expenses.AsQueryable();
 
             if (month is not null)
             {
                 query = query.Where(e => e.Date.Month == month);
             }
+
 
             if (year is not null)
             {
@@ -23,7 +32,7 @@ static class ExpenseEndpoints
                 query = query.Where(e => e.Category.ToLower() == category.ToLower());
             }
 
-            return await query.Select(e => new ExpenseResponse(e.Id, e.Title, e.Amount, e.Category, e.Date)).ToListAsync();
+            return Results.Ok(await query.Select(e => new ExpenseResponse(e.Id, e.Title, e.Amount, e.Category, e.Date)).ToListAsync());
         });
 
         app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
@@ -40,6 +49,14 @@ static class ExpenseEndpoints
 
         app.MapGet("/expenses/summary", async (int? month, int? year, AppDbContext db) =>
         {
+            if (month is not null && (month < 1 || month > 12))
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["month"] = ["Month must be between 1 and 12."]
+                });
+            }
+
             var query = db.Expenses.AsQueryable();
 
             if (month is not null)
@@ -53,7 +70,7 @@ static class ExpenseEndpoints
             }
 
             var expenses = await query.ToListAsync();
-            return expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList();
+            return Results.Ok(expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList());
         });
 
 

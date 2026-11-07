@@ -22,6 +22,10 @@ static class ExpenseValidation
         {
             errors["Category"] = ["Category is required."];
         }
+        else if (request.Category.Length > 50)
+        {
+            errors["Category"] = ["Category must be 50 characters or less."];
+        }
 
         if (request.Date == default)
         {
