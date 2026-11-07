@@ -21,7 +21,6 @@ static class ExpenseEndpoints
                 query = query.Where(e => e.Date.Month == month);
             }
 
-
             if (year is not null)
             {
                 query = query.Where(e => e.Date.Year == year);
@@ -32,7 +31,7 @@ static class ExpenseEndpoints
                 query = query.Where(e => e.Category.ToLower() == category.ToLower());
             }
 
-            return Results.Ok(await query.Select(e => new ExpenseResponse(e.Id, e.Title, e.Amount, e.Category, e.Date)).ToListAsync());
+            return Results.Ok(await query.Select(e => ExpenseResponse.From(e)).ToListAsync());
         });
 
         app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
@@ -44,7 +43,7 @@ static class ExpenseEndpoints
                 return Results.NotFound();
             }
 
-            return Results.Ok(new ExpenseResponse(expense.Id, expense.Title, expense.Amount, expense.Category, expense.Date));
+            return Results.Ok(ExpenseResponse.From(expense));
         });
 
         app.MapGet("/expenses/summary", async (int? month, int? year, AppDbContext db) =>
@@ -73,7 +72,6 @@ static class ExpenseEndpoints
             return Results.Ok(expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList());
         });
 
-
         app.MapPost("/expenses", async (ExpenseRequest request, AppDbContext db) =>
         {
             var errors = ExpenseValidation.Validate(request);
@@ -87,7 +85,7 @@ static class ExpenseEndpoints
 
             await db.SaveChangesAsync();
 
-            return Results.Created($"/expenses/{expense.Id}", new ExpenseResponse(expense.Id, expense.Title, expense.Amount, expense.Category, expense.Date));
+            return Results.Created($"/expenses/{expense.Id}", ExpenseResponse.From(expense));
         });
 
         app.MapPut("/expenses/{id}", async (int id, ExpenseRequest request, AppDbContext db) =>
