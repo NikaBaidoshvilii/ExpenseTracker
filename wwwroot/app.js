@@ -99,10 +99,22 @@ async function loadSummary() {
     const summary = document.getElementById("summary");
     summary.innerHTML = "";
 
+    const max = Math.max(...results.map(r => r.total));
+
     for (const result of results) {
-        const div = document.createElement("div");
-        div.textContent = `${result.category} : ${result.total.toFixed(2)}`;
-        summary.appendChild(div);
+        const row = document.createElement("div");
+        row.className = "summary-row";
+
+        const label = document.createElement("span");
+        label.textContent = `${result.category} : ${result.total.toFixed(2)}`;
+        row.appendChild(label);
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.width = `${(result.total / max) * 100}%`;
+        row.appendChild(bar);
+
+        summary.appendChild(row);
     }
 }
 
