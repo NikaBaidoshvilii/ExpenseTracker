@@ -34,9 +34,16 @@ function getFilterQuery() {
     return text ? `?${text}` : "";
 }
 
+async function fetchJson(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+    }
+    return response.json();
+}
+
 async function loadExpenses() {
-    const response = await fetch(`/expenses${getFilterQuery()}`);
-    const expenses = await response.json();
+    const expenses = await fetchJson(`/expenses${getFilterQuery()}`);
 
     const tbody = document.getElementById("expenses-body");
     tbody.innerHTML = "";
@@ -100,8 +107,8 @@ async function loadExpenses() {
 }
 
 async function loadSummary() {
-    const response = await fetch(`/expenses/summary${getFilterQuery()}`);
-    const results = await response.json();
+    const results = await fetchJson(`/expenses/summary${getFilterQuery()}`);
+
     results.sort((a, b) => b.total - a.total);
 
     const summary = document.getElementById("summary");
@@ -127,8 +134,15 @@ async function loadSummary() {
 }
 
 async function refresh() {
-    await loadExpenses();
-    await loadSummary();
+    try {
+        await loadExpenses();
+        await loadSummary();
+    } catch {
+        errorsList.innerHTML = "";
+        const li = document.createElement("li");
+        li.textContent = "Could not load data. Is the server running?";
+        errorsList.appendChild(li);
+    }
 }
 
 form.addEventListener("submit", async (event) => {
