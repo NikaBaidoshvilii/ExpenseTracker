@@ -1,5 +1,10 @@
 let editingId = null;
 
+const form = document.getElementById("expense-form");
+const errorsList = document.getElementById("errors");
+const applyButton = document.getElementById("apply-filters");
+const clearButton = document.getElementById("clear-filters");
+
 function resetForm() {
     form.reset();
     editingId = null;
@@ -7,8 +12,23 @@ function resetForm() {
     document.getElementById("cancel-button").hidden = true;
 }
 
+function getFilterQuery() {
+    const params = new URLSearchParams();
+
+    const month = document.getElementById("filter-month").value;
+    const year = document.getElementById("filter-year").value;
+    const category = document.getElementById("filter-category").value;
+
+    if (month) params.set("month", month);
+    if (year) params.set("year", year);
+    if (category) params.set("category", category);
+
+    const text = params.toString();
+    return text ? `?${text}` : "";
+}
+
 async function loadExpenses() {
-    const response = await fetch("/expenses");
+    const response = await fetch(`/expenses${getFilterQuery()}`);
     const expenses = await response.json();
 
     const tbody = document.getElementById("expenses-body");
@@ -55,7 +75,6 @@ async function loadExpenses() {
             document.getElementById("date").value = expense.date;
 
             document.getElementById("submit-button").textContent = "Save";
-
             document.getElementById("cancel-button").hidden = false;
         });
 
@@ -68,15 +87,29 @@ async function loadExpenses() {
                 resetForm();
             }
 
-            loadExpenses();
+            refresh();
         });
     }
 }
 
-document.getElementById("cancel-button").addEventListener("click", resetForm);
+async function loadSummary() {
+    const response = await fetch(`/expenses/summary${getFilterQuery()}`);
+    const results = await response.json();
 
-const form = document.getElementById("expense-form");
-const errorsList = document.getElementById("errors");
+    const summary = document.getElementById("summary");
+    summary.innerHTML = "";
+
+    for (const result of results) {
+        const div = document.createElement("div");
+        div.textContent = `${result.category} : ${result.total.toFixed(2)}`;
+        summary.appendChild(div);
+    }
+}
+
+async function refresh() {
+    await loadExpenses();
+    await loadSummary();
+}
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -100,7 +133,7 @@ form.addEventListener("submit", async (event) => {
     if (response.ok) {
         errorsList.innerHTML = "";
         resetForm();
-        loadExpenses();
+        refresh();
     }
     else {
         errorsList.innerHTML = "";
@@ -109,7 +142,7 @@ form.addEventListener("submit", async (event) => {
         try {
             problem = await response.json();
         } catch {
-
+            // the response wasn't JSON, so problem stays null
         }
 
         if (problem?.errors) {
@@ -128,4 +161,18 @@ form.addEventListener("submit", async (event) => {
     }
 });
 
-loadExpenses();
+document.getElementById("cancel-button").addEventListener("click", resetForm);
+
+applyButton.addEventListener("click", () => {
+    refresh();
+});
+
+clearButton.addEventListener("click", () => {
+    document.getElementById("filter-month").value = "";
+    document.getElementById("filter-year").value = "";
+    document.getElementById("filter-category").value = "";
+
+    refresh();
+});
+
+refresh();
