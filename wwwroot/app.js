@@ -5,8 +5,15 @@ const errorsList = document.getElementById("errors");
 const applyButton = document.getElementById("apply-filters");
 const clearButton = document.getElementById("clear-filters");
 
+function clearInvalid() {
+    for (const input of form.querySelectorAll("input")) {
+        input.classList.remove("invalid");
+    }
+}
+
 function resetForm() {
     form.reset();
+    clearInvalid();
     editingId = null;
     document.getElementById("submit-button").textContent = "Add";
     document.getElementById("cancel-button").hidden = true;
@@ -126,6 +133,8 @@ async function refresh() {
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    clearInvalid();
+
     const expense = {
         title: document.getElementById("title").value,
         amount: Number(document.getElementById("amount").value),
@@ -158,7 +167,9 @@ form.addEventListener("submit", async (event) => {
         }
 
         if (problem?.errors) {
-            for (const messages of Object.values(problem.errors)) {
+            for (const [field, messages] of Object.entries(problem.errors)) {
+                document.getElementById(field.toLowerCase())?.classList.add("invalid");
+
                 for (const message of messages) {
                     const li = document.createElement("li");
                     li.textContent = message;

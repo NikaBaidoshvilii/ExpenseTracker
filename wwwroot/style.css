@@ -1,0 +1,132 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background-color: #f5f6f8;
+    color: #222;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.summary-row {
+    margin: 8px 0;
+}
+
+.summary-row span {
+    display: block;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.summary-row span::first-letter {
+    text-transform: uppercase;
+}
+
+.bar {
+    background: steelblue;
+    height: 16px;
+    border-radius: 4px;
+    min-width: 2px;
+}
+
+#expense-form, #filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+input, select, button {
+    padding: 8px 12px;
+    border: 1px solid #c9ccd1;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#submit-button {
+    background: steelblue;
+    color: white;
+    border-color: steelblue;
+    cursor: pointer;
+}
+
+#submit-button:hover {
+    background: #3a6b94;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #e3e5e8;
+}
+
+th:last-child, td:last-child {
+    width: 1%;
+    white-space: nowrap;
+    text-align: left;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    text-align: right;
+    padding-right: 32px;
+}
+
+td:nth-child(4), td:nth-child(5) {
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #f0f4f8;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+#errors {
+    color: #b00020;
+    list-style: none;
+    padding: 0;
+}
+
+td button + button {
+    background: #b00020;
+    color: white;
+    border-color: #b00020;
+    margin-left: 4px;
+}
+
+.invalid {
+    border-color: #b00020;
+    background: #fff5f5;
+}
+
+@media (max-width: 600px) {
+    #expense-form input,
+    #expense-form button {
+        flex: 1 1 100%;
+    }
+
+    #filters input,
+    #filters select {
+        flex: 1 1 40%;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 0.9rem;
+    }
+
+    td button {
+        padding: 6px 8px;
+    }
+}
