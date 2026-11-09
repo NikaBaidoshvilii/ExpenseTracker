@@ -102,6 +102,7 @@ async function loadExpenses() {
 async function loadSummary() {
     const response = await fetch(`/expenses/summary${getFilterQuery()}`);
     const results = await response.json();
+    results.sort((a, b) => b.total - a.total);
 
     const summary = document.getElementById("summary");
     summary.innerHTML = "";
