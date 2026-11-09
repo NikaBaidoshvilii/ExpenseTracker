@@ -7,6 +7,7 @@ async function loadExpenses() {
 
     for (const expense of expenses) {
         const row = document.createElement("tr");
+        const actionsCell = document.createElement("td");
 
         const titleCell = document.createElement("td");
         titleCell.textContent = expense.title;
@@ -24,8 +25,60 @@ async function loadExpenses() {
         dateCell.textContent = expense.date;
         row.appendChild(dateCell);
 
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        actionsCell.appendChild(deleteButton);
+
+        row.appendChild(actionsCell);
+
         tbody.appendChild(row);
+
+        deleteButton.addEventListener("click", async () => {
+            if (!confirm("Delete this expense?")) return;
+
+            await fetch(`/expenses/${expense.id}`, { method: "DELETE" });
+
+            loadExpenses();
+        });
     }
 }
+
+const form = document.getElementById("expense-form");
+const errorsList = document.getElementById("errors");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const expense = {
+        title: document.getElementById("title").value,
+        amount: Number(document.getElementById("amount").value),
+        category: document.getElementById("category").value,
+        date: document.getElementById("date").value
+    };
+
+    const response = await fetch("/expenses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(expense)
+    });
+
+    if (response.ok) {
+        errorsList.innerHTML = "";
+        form.reset();
+        loadExpenses();
+    }
+    else {
+        const problem = await response.json();
+        errorsList.innerHTML = "";
+
+        for (const messages of Object.values(problem.errors)) {
+            for (const message of messages) {
+                const li = document.createElement("li");
+                li.textContent = message;
+                errorsList.appendChild(li);
+            }
+        }
+    }
+});
 
 loadExpenses();
