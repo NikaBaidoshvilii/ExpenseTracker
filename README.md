@@ -2,6 +2,9 @@
 
 A small full-stack app for tracking personal expenses: a REST API built with ASP.NET Core and EF Core (SQLite), plus a plain HTML, CSS and JavaScript web page.
 
+**Live demo:** [expensetracker-oet7.onrender.com](https://expensetracker-oet7.onrender.com/)
+*(Hosted on a free tier, so the first load can take about 30 seconds to wake up.)*
+
 ![Expense Tracker](docs/screenshot.png)
 
 ## Features
