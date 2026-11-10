@@ -42,6 +42,12 @@ async function fetchJson(url) {
     return response.json();
 }
 
+function addCell(row, text) {
+    const cell = document.createElement("td");
+    cell.textContent = text;
+    row.appendChild(cell);
+}
+
 async function loadExpenses() {
     const expenses = await fetchJson(`/expenses${getFilterQuery()}`);
 
@@ -52,21 +58,10 @@ async function loadExpenses() {
         const row = document.createElement("tr");
         const actionsCell = document.createElement("td");
 
-        const titleCell = document.createElement("td");
-        titleCell.textContent = expense.title;
-        row.appendChild(titleCell);
-
-        const amountCell = document.createElement("td");
-        amountCell.textContent = expense.amount.toFixed(2);
-        row.appendChild(amountCell);
-
-        const categoryCell = document.createElement("td");
-        categoryCell.textContent = expense.category;
-        row.appendChild(categoryCell);
-
-        const dateCell = document.createElement("td");
-        dateCell.textContent = expense.date;
-        row.appendChild(dateCell);
+        addCell(row, expense.title);
+        addCell(row, expense.amount.toFixed(2));
+        addCell(row, expense.category);
+        addCell(row, expense.date);
 
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
