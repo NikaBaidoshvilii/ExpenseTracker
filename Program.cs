@@ -31,3 +31,5 @@ app.MapGet("/ping", () => "pong");
 app.MapExpenseEndpoints();
 
 app.Run();
+
+public partial class Program { }

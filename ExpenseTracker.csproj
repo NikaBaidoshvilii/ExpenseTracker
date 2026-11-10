@@ -13,6 +13,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.14" />
+    <Compile Remove="ExpenseTracker.Tests/**" />
+    <InternalsVisibleTo Include="ExpenseTracker.Tests" />
   </ItemGroup>
 
 </Project>
