@@ -4,6 +4,15 @@ const form = document.getElementById("expense-form");
 const errorsList = document.getElementById("errors");
 const applyButton = document.getElementById("apply-filters");
 const clearButton = document.getElementById("clear-filters");
+const titleInput = document.getElementById("title");
+const amountInput = document.getElementById("amount");
+const categoryInput = document.getElementById("category");
+const dateInput = document.getElementById("date");
+const submitButton = document.getElementById("submit-button");
+const cancelButton = document.getElementById("cancel-button");
+const filterMonth = document.getElementById("filter-month");
+const filterYear = document.getElementById("filter-year");
+const filterCategory = document.getElementById("filter-category");
 
 function clearInvalid() {
     for (const input of form.querySelectorAll("input")) {
@@ -15,20 +24,16 @@ function resetForm() {
     form.reset();
     clearInvalid();
     editingId = null;
-    document.getElementById("submit-button").textContent = "Add";
-    document.getElementById("cancel-button").hidden = true;
+    submitButton.textContent = "Add";
+    cancelButton.hidden = true;
 }
 
 function getFilterQuery() {
     const params = new URLSearchParams();
 
-    const month = document.getElementById("filter-month").value;
-    const year = document.getElementById("filter-year").value;
-    const category = document.getElementById("filter-category").value;
-
-    if (month) params.set("month", month);
-    if (year) params.set("year", year);
-    if (category) params.set("category", category);
+    if (filterMonth.value) params.set("month", filterMonth.value);
+    if (filterYear.value) params.set("year", filterYear.value);
+    if (filterCategory.value) params.set("category", filterCategory.value);
 
     const text = params.toString();
     return text ? `?${text}` : "";
@@ -78,13 +83,13 @@ async function loadExpenses() {
         editButton.addEventListener("click", () => {
             editingId = expense.id;
 
-            document.getElementById("title").value = expense.title;
-            document.getElementById("amount").value = expense.amount;
-            document.getElementById("category").value = expense.category;
-            document.getElementById("date").value = expense.date;
+            titleInput.value = expense.title;
+            amountInput.value = expense.amount;
+            categoryInput.value = expense.category;
+            dateInput.value = expense.date;
 
-            document.getElementById("submit-button").textContent = "Save";
-            document.getElementById("cancel-button").hidden = false;
+            submitButton.textContent = "Save";
+            cancelButton.hidden = false;
         });
 
         deleteButton.addEventListener("click", async () => {
@@ -146,10 +151,10 @@ form.addEventListener("submit", async (event) => {
     clearInvalid();
 
     const expense = {
-        title: document.getElementById("title").value,
-        amount: Number(document.getElementById("amount").value),
-        category: document.getElementById("category").value,
-        date: document.getElementById("date").value
+        title: titleInput.value,
+        amount: Number(amountInput.value),
+        category: categoryInput.value,
+        date: dateInput.value
     };
 
     const url = editingId === null ? "/expenses" : `/expenses/${editingId}`;
@@ -194,16 +199,16 @@ form.addEventListener("submit", async (event) => {
     }
 });
 
-document.getElementById("cancel-button").addEventListener("click", resetForm);
+cancelButton.addEventListener("click", resetForm);
 
 applyButton.addEventListener("click", () => {
     refresh();
 });
 
 clearButton.addEventListener("click", () => {
-    document.getElementById("filter-month").value = "";
-    document.getElementById("filter-year").value = "";
-    document.getElementById("filter-category").value = "";
+    filterMonth.value = "";
+    filterYear.value = "";
+    filterCategory.value = "";
 
     refresh();
 });
