@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "rootDir": "client",
+    "outDir": "wwwroot",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "strict": true
+  }
+}

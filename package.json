@@ -1,0 +1,28 @@
+{
+  "name": "expensetracker",
+  "version": "1.0.0",
+  "description": "A small full-stack app for tracking personal expenses: a REST API built with ASP.NET Core and EF Core (SQLite), plus a plain HTML, CSS and JavaScript web page.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikaBaidoshvilii/ExpenseTracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NikaBaidoshvilii/ExpenseTracker/issues"
+  },
+  "homepage": "https://github.com/NikaBaidoshvilii/ExpenseTracker#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
