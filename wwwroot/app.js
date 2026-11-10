@@ -23,6 +23,7 @@ function clearInvalid() {
 function resetForm() {
     form.reset();
     clearInvalid();
+    errorsList.innerHTML = "";
     editingId = null;
     submitButton.textContent = "Add";
     cancelButton.hidden = true;
@@ -167,7 +168,6 @@ form.addEventListener("submit", async (event) => {
     });
 
     if (response.ok) {
-        errorsList.innerHTML = "";
         resetForm();
         refresh();
     }
