@@ -23,6 +23,15 @@ A small full-stack app for tracking personal expenses: a REST API built with ASP
 
 Use `ExpenseTracker.http` to try the API endpoints directly.
 
+## Tests
+Automated API tests use xUnit and `WebApplicationFactory`. Each test run starts the real app against a temporary SQLite database, so your own data is never touched.
+
+```
+dotnet test ExpenseTracker.Tests
+```
+
+They cover the health check, creating expenses (valid and invalid data), getting one by id, a missing id (404) and deleting.
+
 ## Endpoints
 | Method | Path | Description |
 |---|---|---|
@@ -37,3 +46,5 @@ Use `ExpenseTracker.http` to try the API endpoints directly.
 ## Tech
 - C#, ASP.NET Core minimal APIs, EF Core with SQLite
 - Plain JavaScript (`fetch`), HTML and CSS, served from `wwwroot`
+- xUnit and `WebApplicationFactory` for integration tests
+- Docker, deployed on Render
