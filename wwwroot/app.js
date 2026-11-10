@@ -96,7 +96,7 @@ async function loadExpenses() {
         deleteButton.addEventListener("click", async () => {
             if (!confirm("Delete this expense?")) return;
 
-            await fetch(`/expenses/${expense.id}`, { method: "DELETE" });
+            const response = await fetch(`/expenses/${expense.id}`, { method: "DELETE" });
 
             if (!response.ok) {
                 errorsList.innerHTML = "";
