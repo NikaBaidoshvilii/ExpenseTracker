@@ -98,6 +98,14 @@ async function loadExpenses() {
 
             await fetch(`/expenses/${expense.id}`, { method: "DELETE" });
 
+            if (!response.ok) {
+                errorsList.innerHTML = "";
+                const li = document.createElement("li");
+                li.textContent = "Could not delete the expense.";
+                errorsList.appendChild(li);
+                return;
+            }
+
             if (editingId === expense.id) {
                 resetForm();
             }
