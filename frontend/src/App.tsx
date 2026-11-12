@@ -63,6 +63,16 @@ function App() {
         setErrors([]);
     }
 
+    async function handleDelete(id: number) {
+        if (!confirm("Delete this expense?")) return;
+
+        const response = await fetch(`/expenses/${id}`, { method: "DELETE" });
+
+        if (response.ok) {
+            setExpenses(expenses.filter((expense) => expense.id !== id));
+        }
+    }
+
     return (
         <>
             <h1>Expenses: {expenses.length} </h1>
@@ -89,6 +99,7 @@ function App() {
                 {expenses.map((expense) => (
                     <li key={expense.id}>
                         {expense.title} {expense.amount.toFixed(2)} {expense.category} {expense.date}
+                        <button onClick={() => handleDelete(expense.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
