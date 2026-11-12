@@ -16,6 +16,11 @@ interface ValidationProblem {
     errors: Record<string, string[]>;
 }
 
+interface CategoryTotal {
+    category: string;
+    total: number;
+}
+
 function App() {
     const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
     const [title, setTitle] = useState("");
@@ -27,6 +32,7 @@ function App() {
     const [filterMonth, setFilterMonth] = useState("");
     const [filterYear, setFilterYear] = useState("");
     const [filterCategory, setFilterCategory] = useState("");
+    const [summary, setSummary] = useState<CategoryTotal[]>([]);
 
     useEffect(() => {
         fetch(`/expenses${getFilterQuery()}`)
@@ -44,6 +50,22 @@ function App() {
             return text ? `?${text}` : "";
         }
     }, [filterMonth, filterYear, filterCategory]);
+
+    useEffect(() => {
+        fetch(`/expenses/summary${getFilterQuery()}`)
+            .then((response) => response.json())
+            .then((data) => setSummary(data));
+
+        function getFilterQuery() {
+            const params = new URLSearchParams();
+
+            if (filterMonth) params.set("month", filterMonth);
+            if (filterYear) params.set("year", filterYear);
+
+            const text = params.toString();
+            return text ? `?${text}` : "";
+        }
+    }, [filterMonth, filterYear, expenses]);
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -159,6 +181,11 @@ function App() {
                         <button onClick={() => startEdit(expense)}>Edit</button>
                         <button onClick={() => handleDelete(expense.id)}>Delete</button>
                     </li>
+                ))}
+            </ul>
+            <ul>
+                {summary.map((row) => (
+                    <li key={row.category}>{row.category}: {row.total.toFixed(2)}</li>
                 ))}
             </ul>
         </>
