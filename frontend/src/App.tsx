@@ -24,12 +24,26 @@ function App() {
     const [date, setDate] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [filterMonth, setFilterMonth] = useState("");
+    const [filterYear, setFilterYear] = useState("");
+    const [filterCategory, setFilterCategory] = useState("");
 
     useEffect(() => {
-        fetch("/expenses")
+        fetch(`/expenses${getFilterQuery()}`)
             .then((response) => response.json())
             .then((data) => setExpenses(data));
-    }, []);
+
+        function getFilterQuery() {
+            const params = new URLSearchParams();
+
+            if (filterMonth) params.set("month", filterMonth);
+            if (filterYear) params.set("year", filterYear);
+            if (filterCategory) params.set("category", filterCategory);
+
+            const text = params.toString();
+            return text ? `?${text}` : "";
+        }
+    }, [filterMonth, filterYear, filterCategory]);
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -121,6 +135,23 @@ function App() {
                     <button type="button" onClick={resetForm}>Cancel</button>
                 )}
             </form>
+            <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} aria-label="Filter by month">
+                <option value="">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            <input value={filterYear} onChange={(e) => setFilterYear(e.target.value)}  type="number" placeholder="Year" aria-label="Filter by year"/>
+            <input value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}  type="text" placeholder="Category" aria-label="Filter by category"/>
             <ul>
                 {expenses.map((expense) => (
                     <li key={expense.id}>
