@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import SummaryChart, { type CategoryTotal } from "./SummaryChart";
 
 interface ExpenseRequest {
     title: string;
@@ -14,11 +15,6 @@ interface ExpenseResponse extends ExpenseRequest {
 
 interface ValidationProblem {
     errors: Record<string, string[]>;
-}
-
-interface CategoryTotal {
-    category: string;
-    total: number;
 }
 
 function App() {
@@ -132,8 +128,6 @@ function App() {
         setEditingId(null);
     }
 
-    const maxTotal = Math.max(...summary.map((row) => row.total));
-
     return (
         <>
             <h1>Expenses: {expenses.length} </h1>
@@ -199,18 +193,7 @@ function App() {
                     </li>
                 ))}
             </ul>
-            {summary.length === 0 ? (
-                <p>No expenses for this period.</p>
-            ) : (
-                <ul>
-                    {summary.map((row) => (
-                        <li key={row.category}>
-                            {row.category}: {row.total.toFixed(2)}
-                            <div className="bar" style={{ width: `${(row.total / maxTotal) * 100}%` }}></div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <SummaryChart summary={summary} />
         </>
     );
 }
