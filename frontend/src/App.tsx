@@ -83,21 +83,21 @@ function App() {
         const response = await fetch(url, {
             method: method,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(expense)
+            body: JSON.stringify(expense),
         });
 
         if (!response.ok) {
             const problem: ValidationProblem = await response.json();
-            setErrors(Object.values(problem.errors).flat())
+            setErrors(Object.values(problem.errors).flat());
             return;
         }
 
         if (editingId === null) {
             const created: ExpenseResponse = await response.json();
-            setExpenses( [ ...expenses, created ] );
+            setExpenses([...expenses, created]);
         } else {
             const updated: ExpenseResponse = { ...expense, id: editingId };
-            setExpenses(expenses.map((item) => item.id === editingId ? updated : item))
+            setExpenses(expenses.map((item) => (item.id === editingId ? updated : item)));
         }
 
         resetForm();
@@ -132,6 +132,8 @@ function App() {
         setEditingId(null);
     }
 
+    const maxTotal = Math.max(...summary.map((row) => row.total));
+
     return (
         <>
             <h1>Expenses: {expenses.length} </h1>
@@ -154,7 +156,9 @@ function App() {
                 <input value={date} onChange={(e) => setDate(e.target.value)} type="date" placeholder="Date" />
                 <button type="submit">{editingId === null ? "Add" : "Save"}</button>
                 {editingId !== null && (
-                    <button type="button" onClick={resetForm}>Cancel</button>
+                    <button type="button" onClick={resetForm}>
+                        Cancel
+                    </button>
                 )}
             </form>
             <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} aria-label="Filter by month">
@@ -172,8 +176,20 @@ function App() {
                 <option value="11">November</option>
                 <option value="12">December</option>
             </select>
-            <input value={filterYear} onChange={(e) => setFilterYear(e.target.value)}  type="number" placeholder="Year" aria-label="Filter by year"/>
-            <input value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}  type="text" placeholder="Category" aria-label="Filter by category"/>
+            <input
+                value={filterYear}
+                onChange={(e) => setFilterYear(e.target.value)}
+                type="number"
+                placeholder="Year"
+                aria-label="Filter by year"
+            />
+            <input
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                type="text"
+                placeholder="Category"
+                aria-label="Filter by category"
+            />
             <ul>
                 {expenses.map((expense) => (
                     <li key={expense.id}>
@@ -183,11 +199,18 @@ function App() {
                     </li>
                 ))}
             </ul>
-            <ul>
-                {summary.map((row) => (
-                    <li key={row.category}>{row.category}: {row.total.toFixed(2)}</li>
-                ))}
-            </ul>
+            {summary.length === 0 ? (
+                <p>No expenses for this period.</p>
+            ) : (
+                <ul>
+                    {summary.map((row) => (
+                        <li key={row.category}>
+                            {row.category}: {row.total.toFixed(2)}
+                            <div className="bar" style={{ width: `${(row.total / maxTotal) * 100}%` }}></div>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </>
     );
 }
