@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import SummaryChart, { type CategoryTotal } from "./SummaryChart";
-import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./ExpenseList";
+import SummaryChart, { type CategoryTotal } from "./components/SummaryChart";
+import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./components/ExpenseList";
+import Filters from "./components/Filters";
 
 interface ValidationProblem {
     errors: Record<string, string[]>;
@@ -145,34 +146,13 @@ function App() {
                     </button>
                 )}
             </form>
-            <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} aria-label="Filter by month">
-                <option value="">All Months</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-            <input
-                value={filterYear}
-                onChange={(e) => setFilterYear(e.target.value)}
-                type="number"
-                placeholder="Year"
-                aria-label="Filter by year"
-            />
-            <input
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                type="text"
-                placeholder="Category"
-                aria-label="Filter by category"
+            <Filters
+                month={filterMonth}
+                year={filterYear}
+                category={filterCategory}
+                onMonthChange={setFilterMonth}
+                onYearChange={setFilterYear}
+                onCategoryChange={setFilterCategory}
             />
             <ExpenseList expenses={expenses} onEdit={startEdit} onDelete={handleDelete} />
             <SummaryChart summary={summary} />
