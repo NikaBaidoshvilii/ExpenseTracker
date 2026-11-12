@@ -23,6 +23,7 @@ function App() {
     const [category, setCategory] = useState("");
     const [date, setDate] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
         fetch("/expenses")
@@ -40,8 +41,11 @@ function App() {
             date: date,
         };
 
-        const response = await fetch("/expenses", {
-            method: "POST",
+        const url = editingId === null ? "/expenses" : `/expenses/${editingId}`;
+        const method = editingId === null ? "POST" : "PUT";
+
+        const response = await fetch(url, {
+            method: method,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(expense)
         });
@@ -52,15 +56,15 @@ function App() {
             return;
         }
 
-        const created: ExpenseResponse = await response.json();
+        if (editingId === null) {
+            const created: ExpenseResponse = await response.json();
+            setExpenses( [ ...expenses, created ] );
+        } else {
+            const updated: ExpenseResponse = { ...expense, id: editingId };
+            setExpenses(expenses.map((item) => item.id === editingId ? updated : item))
+        }
 
-        setExpenses([...expenses, created]);
-
-        setTitle("");
-        setAmount("");
-        setCategory("");
-        setDate("");
-        setErrors([]);
+        resetForm();
     }
 
     async function handleDelete(id: number) {
@@ -71,6 +75,25 @@ function App() {
         if (response.ok) {
             setExpenses(expenses.filter((expense) => expense.id !== id));
         }
+    }
+
+    function startEdit(expense: ExpenseResponse) {
+        setTitle(expense.title);
+        setAmount(expense.amount.toString());
+        setCategory(expense.category);
+        setDate(expense.date);
+
+        setEditingId(expense.id);
+        setErrors([]);
+    }
+
+    function resetForm() {
+        setTitle("");
+        setAmount("");
+        setCategory("");
+        setDate("");
+        setErrors([]);
+        setEditingId(null);
     }
 
     return (
@@ -93,12 +116,16 @@ function App() {
                 />
                 <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Category" />
                 <input value={date} onChange={(e) => setDate(e.target.value)} type="date" placeholder="Date" />
-                <button type="submit">Add</button>
+                <button type="submit">{editingId === null ? "Add" : "Save"}</button>
+                {editingId !== null && (
+                    <button type="button" onClick={resetForm}>Cancel</button>
+                )}
             </form>
             <ul>
                 {expenses.map((expense) => (
                     <li key={expense.id}>
                         {expense.title} {expense.amount.toFixed(2)} {expense.category} {expense.date}
+                        <button onClick={() => startEdit(expense)}>Edit</button>
                         <button onClick={() => handleDelete(expense.id)}>Delete</button>
                     </li>
                 ))}
