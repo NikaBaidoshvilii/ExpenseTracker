@@ -3,6 +3,7 @@ import "./App.css";
 import SummaryChart, { type CategoryTotal } from "./components/SummaryChart";
 import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./components/ExpenseList";
 import Filters from "./components/Filters";
+import ExpenseForm from "./components/ExpenseForm";
 
 interface ValidationProblem {
     errors: Record<string, string[]>;
@@ -122,30 +123,20 @@ function App() {
     return (
         <>
             <h1>Expenses: {expenses.length} </h1>
-
-            <ul>
-                {errors.map((error) => (
-                    <li key={error}>{error}</li>
-                ))}
-            </ul>
-            <form onSubmit={handleSubmit}>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
-                <input
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    type="number"
-                    step="0.01"
-                    placeholder="Amount"
-                />
-                <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Category" />
-                <input value={date} onChange={(e) => setDate(e.target.value)} type="date" placeholder="Date" />
-                <button type="submit">{editingId === null ? "Add" : "Save"}</button>
-                {editingId !== null && (
-                    <button type="button" onClick={resetForm}>
-                        Cancel
-                    </button>
-                )}
-            </form>
+            <ExpenseForm
+                title={title}
+                amount={amount}
+                category={category}
+                date={date}
+                onTitleChange={setTitle}
+                onAmountChange={setAmount}
+                onCategoryChange={setCategory}
+                onDateChange={setDate}
+                errors={errors}
+                isEditing={editingId !== null}
+                onSubmit={handleSubmit}
+                onCancel={resetForm}
+            />
             <Filters
                 month={filterMonth}
                 year={filterYear}
