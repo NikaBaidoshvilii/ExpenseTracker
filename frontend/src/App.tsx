@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import SummaryChart, { type CategoryTotal } from "./SummaryChart";
-
-interface ExpenseRequest {
-    title: string;
-    amount: number;
-    category: string;
-    date: string;
-}
-
-interface ExpenseResponse extends ExpenseRequest {
-    id: number;
-}
+import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./ExpenseList";
 
 interface ValidationProblem {
     errors: Record<string, string[]>;
@@ -184,15 +174,7 @@ function App() {
                 placeholder="Category"
                 aria-label="Filter by category"
             />
-            <ul>
-                {expenses.map((expense) => (
-                    <li key={expense.id}>
-                        {expense.title} {expense.amount.toFixed(2)} {expense.category} {expense.date}
-                        <button onClick={() => startEdit(expense)}>Edit</button>
-                        <button onClick={() => handleDelete(expense.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+            <ExpenseList expenses={expenses} onEdit={startEdit} onDelete={handleDelete} />
             <SummaryChart summary={summary} />
         </>
     );
