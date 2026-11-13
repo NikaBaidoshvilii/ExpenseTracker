@@ -9,12 +9,17 @@ interface ValidationProblem {
     errors: Record<string, string[]>;
 }
 
+interface FormValues {
+    title: string;
+    amount: string;
+    category: string;
+    date: string;
+}
+const emptyForm: FormValues = { title: "", amount: "", category: "", date: "" };
+
 function App() {
     const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
-    const [title, setTitle] = useState("");
-    const [amount, setAmount] = useState("");
-    const [category, setCategory] = useState("");
-    const [date, setDate] = useState("");
+    const [form, setForm] = useState<FormValues>(emptyForm);
     const [errors, setErrors] = useState<string[]>([]);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [filterMonth, setFilterMonth] = useState("");
@@ -59,10 +64,10 @@ function App() {
         e.preventDefault();
 
         const expense: ExpenseRequest = {
-            title: title,
-            amount: Number(amount),
-            category: category,
-            date: date,
+            title: form.title,
+            amount: Number(form.amount),
+            category: form.category,
+            date: form.date,
         };
 
         const url = editingId === null ? "/expenses" : `/expenses/${editingId}`;
@@ -102,20 +107,19 @@ function App() {
     }
 
     function startEdit(expense: ExpenseResponse) {
-        setTitle(expense.title);
-        setAmount(expense.amount.toString());
-        setCategory(expense.category);
-        setDate(expense.date);
+        setForm({
+            title: expense.title,
+            amount: expense.amount.toString(),
+            category: expense.category,
+            date: expense.date,
+        });
 
         setEditingId(expense.id);
         setErrors([]);
     }
 
     function resetForm() {
-        setTitle("");
-        setAmount("");
-        setCategory("");
-        setDate("");
+        setForm(emptyForm);
         setErrors([]);
         setEditingId(null);
     }
@@ -124,14 +128,14 @@ function App() {
         <>
             <h1>Expenses: {expenses.length} </h1>
             <ExpenseForm
-                title={title}
-                amount={amount}
-                category={category}
-                date={date}
-                onTitleChange={setTitle}
-                onAmountChange={setAmount}
-                onCategoryChange={setCategory}
-                onDateChange={setDate}
+                title={form.title}
+                amount={form.amount}
+                category={form.category}
+                date={form.date}
+                onTitleChange={(value) => setForm({ ...form, title: value })}
+                onAmountChange={(value) => setForm({ ...form, amount: value })}
+                onCategoryChange={(value) => setForm({ ...form, category: value })}
+                onDateChange={(value) => setForm({ ...form, date: value })}
                 errors={errors}
                 isEditing={editingId !== null}
                 onSubmit={handleSubmit}
