@@ -3,18 +3,12 @@ import "./App.css";
 import SummaryChart, { type CategoryTotal } from "./components/SummaryChart";
 import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./components/ExpenseList";
 import Filters from "./components/Filters";
-import ExpenseForm from "./components/ExpenseForm";
+import ExpenseForm, { type FormValues } from "./components/ExpenseForm";
 
 interface ValidationProblem {
     errors: Record<string, string[]>;
 }
 
-interface FormValues {
-    title: string;
-    amount: string;
-    category: string;
-    date: string;
-}
 const emptyForm: FormValues = { title: "", amount: "", category: "", date: "" };
 
 function App() {
@@ -128,14 +122,8 @@ function App() {
         <>
             <h1>Expenses: {expenses.length} </h1>
             <ExpenseForm
-                title={form.title}
-                amount={form.amount}
-                category={form.category}
-                date={form.date}
-                onTitleChange={(value) => setForm({ ...form, title: value })}
-                onAmountChange={(value) => setForm({ ...form, amount: value })}
-                onCategoryChange={(value) => setForm({ ...form, category: value })}
-                onDateChange={(value) => setForm({ ...form, date: value })}
+                values={form}
+                onChange={setForm}
                 errors={errors}
                 isEditing={editingId !== null}
                 onSubmit={handleSubmit}
