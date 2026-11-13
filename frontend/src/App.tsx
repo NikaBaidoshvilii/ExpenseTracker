@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import SummaryChart from "./components/SummaryChart";
 import ExpenseList from "./components/ExpenseList";
 import Filters from "./components/Filters";
@@ -117,7 +116,7 @@ function App() {
 
     return (
         <>
-            <h1>Expenses: {expenses.length} </h1>
+            <h1>Expense Tracker</h1>
             <ExpenseForm
                 values={form}
                 onChange={setForm}

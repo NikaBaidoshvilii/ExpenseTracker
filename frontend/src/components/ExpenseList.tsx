@@ -1,4 +1,5 @@
 import type { ExpenseResponse } from "../types";
+import "./ExpenseList.css";
 
 interface ExpenseListProps {
     expenses: ExpenseResponse[];

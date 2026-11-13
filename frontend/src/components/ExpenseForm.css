@@ -1,0 +1,24 @@
+.expense-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.errors {
+    color: #b00020;
+    list-style: none;
+    padding: 0;
+}
+
+.invalid {
+    border-color: #b00020;
+    background: #fff5f5;
+}
+
+@media (max-width: 600px) {
+    .expense-form input,
+    .expense-form button {
+        flex: 1 1 100%;
+    }
+}

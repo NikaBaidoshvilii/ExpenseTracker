@@ -1,3 +1,5 @@
+import "./Filters.css";
+
 interface FilterProps {
     month: string;
     year: string;
@@ -9,7 +11,7 @@ interface FilterProps {
 
 function Filters({ month, year, category, onMonthChange, onYearChange, onCategoryChange }: FilterProps) {
     return (
-        <>
+        <div className="filters">
             <select value={month} onChange={(e) => onMonthChange(e.target.value)} aria-label="Filter by month">
                 <option value="">All Months</option>
                 <option value="1">January</option>
@@ -39,7 +41,7 @@ function Filters({ month, year, category, onMonthChange, onYearChange, onCategor
                 placeholder="Category"
                 aria-label="Filter by category"
             />
-        </>
+        </div>
     );
 }
 

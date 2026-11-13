@@ -1,4 +1,5 @@
 import type { CategoryTotal } from "../types";
+import "./SummaryChart.css";
 
 interface SummaryChartProps {
     summary: CategoryTotal[];

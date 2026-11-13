@@ -1,0 +1,13 @@
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+    .filters input,
+    .filters select {
+        flex: 1 1 40%;
+    }
+}
