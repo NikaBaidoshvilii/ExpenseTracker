@@ -1,7 +1,4 @@
-export interface CategoryTotal {
-    category: string;
-    total: number;
-}
+import type { CategoryTotal } from "../types";
 
 interface SummaryChartProps {
     summary: CategoryTotal[];

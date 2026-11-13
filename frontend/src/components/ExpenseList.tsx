@@ -1,13 +1,4 @@
-export interface ExpenseRequest {
-    title: string;
-    amount: number;
-    category: string;
-    date: string;
-}
-
-export interface ExpenseResponse extends ExpenseRequest {
-    id: number;
-}
+import type { ExpenseResponse } from "../types";
 
 interface ExpenseListProps {
     expenses: ExpenseResponse[];

@@ -1,4 +1,5 @@
 import type React from "react";
+import type { FormValues } from "../types";
 
 interface ExpenseFormProps {
     values: FormValues;
@@ -7,13 +8,6 @@ interface ExpenseFormProps {
     isEditing: boolean;
     onSubmit: (e: React.SubmitEvent<HTMLFormElement>) => void;
     onCancel: () => void;
-}
-
-export interface FormValues {
-    title: string;
-    amount: string;
-    category: string;
-    date: string;
 }
 
 function ExpenseForm({ values, onChange, errors, isEditing, onSubmit, onCancel }: ExpenseFormProps) {

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import SummaryChart, { type CategoryTotal } from "./components/SummaryChart";
-import ExpenseList, { type ExpenseRequest, type ExpenseResponse } from "./components/ExpenseList";
+import SummaryChart from "./components/SummaryChart";
+import ExpenseList from "./components/ExpenseList";
 import Filters from "./components/Filters";
-import ExpenseForm, { type FormValues } from "./components/ExpenseForm";
-
-interface ValidationProblem {
-    errors: Record<string, string[]>;
-}
+import ExpenseForm from "./components/ExpenseForm";
+import type { CategoryTotal, ExpenseRequest, ExpenseResponse, FormValues, ValidationProblem } from "./types";
 
 const emptyForm: FormValues = { title: "", amount: "", category: "", date: "" };
 
