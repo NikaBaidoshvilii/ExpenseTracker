@@ -7,17 +7,35 @@ interface ExpenseListProps {
     onDelete: (id: number) => void;
 }
 
-function ExpenseList({ expenses, onEdit, onDelete}: ExpenseListProps) {
+function ExpenseList({ expenses, onEdit, onDelete }: ExpenseListProps) {
     return (
-        <ul>
-            {expenses.map((expense) => (
-                <li key={expense.id}>
-                    {expense.title} {expense.amount.toFixed(2)} {expense.category} {expense.date}
-                    <button onClick={() => onEdit(expense)}>Edit</button>
-                    <button onClick={() => onDelete(expense.id)}>Delete</button>
-                </li>
-            ))}
-        </ul>
+        <div className="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {expenses.map((expense) => (
+                        <tr key={expense.id}>
+                            <td>{expense.title}</td>
+                            <td>{expense.amount.toFixed(2)}</td>
+                            <td>{expense.category}</td>
+                            <td>{expense.date}</td>
+                            <td>
+                                <button onClick={() => onEdit(expense)}>Edit</button>
+                                <button onClick={() => onDelete(expense.id)}>Delete</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 }
 
