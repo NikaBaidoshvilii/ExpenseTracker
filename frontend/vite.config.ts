@@ -8,5 +8,9 @@ export default defineConfig({
         proxy: {
             "/expenses": "http://localhost:5254"
         }
-    }
+    },
+    build: {
+        outDir: "../wwwroot",
+        emptyOutDir: true,
+    },
 })

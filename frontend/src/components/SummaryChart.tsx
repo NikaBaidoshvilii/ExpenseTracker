@@ -8,17 +8,24 @@ interface SummaryChartProps {
 function SummaryChart({ summary }: SummaryChartProps) {
     const maxTotal = Math.max(...summary.map((row) => row.total));
 
-    return summary.length === 0 ? (
-        <p>No expenses for this period.</p>
-    ) : (
-        <ul>
-            {summary.map((row) => (
-                <li key={row.category}>
-                    {row.category}: {row.total.toFixed(2)}
-                    <div className="bar" style={{ width: `${(row.total / maxTotal) * 100}%` }}></div>
-                </li>
-            ))}
-        </ul>
+    return (
+        <>
+            <h2>Summary</h2>
+            {summary.length === 0 ? (
+                <p>No expenses for this period.</p>
+            ) : (
+                <div>
+                    {summary.map((row) => (
+                        <div key={row.category} className="summary-row">
+                            <span>
+                                {row.category}: {row.total.toFixed(2)}
+                            </span>
+                            <div className="bar" style={{ width: `${(row.total / maxTotal) * 100}%` }}></div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </>
     );
 }
 
