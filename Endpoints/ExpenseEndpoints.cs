@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 static class ExpenseEndpoints
 {
     public static void MapExpenseEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/expenses").RequireAuthorization();
-        
-        group.MapGet("", async (int? month, int? year, string? category, AppDbContext db) =>
+
+        group.MapGet("", async (int? month, int? year, string? category, AppDbContext db, ClaimsPrincipal user) =>
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
             if (month is not null && (month < 1 || month > 12))
             {
                 return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -16,7 +19,7 @@ static class ExpenseEndpoints
                 });
             }
 
-            var query = db.Expenses.AsQueryable();
+            var query = db.Expenses.Where(e => e.UserId == userId);
 
             if (month is not null)
             {
@@ -36,9 +39,11 @@ static class ExpenseEndpoints
             return Results.Ok(await query.Select(e => ExpenseResponse.From(e)).ToListAsync());
         });
 
-        group.MapGet("/{id}", async (int id, AppDbContext db) =>
+        group.MapGet("/{id}", async (int id, AppDbContext db, ClaimsPrincipal user) =>
         {
-            var expense = await db.Expenses.FindAsync(id);
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            var expense = await db.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
 
             if (expense is null)
             {
@@ -48,8 +53,10 @@ static class ExpenseEndpoints
             return Results.Ok(ExpenseResponse.From(expense));
         });
 
-        group.MapGet("/summary", async (int? month, int? year, AppDbContext db) =>
+        group.MapGet("/summary", async (int? month, int? year, AppDbContext db, ClaimsPrincipal user) =>
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
             if (month is not null && (month < 1 || month > 12))
             {
                 return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -58,7 +65,7 @@ static class ExpenseEndpoints
                 });
             }
 
-            var query = db.Expenses.AsQueryable();
+            var query = db.Expenses.Where(e => e.UserId == userId);
 
             if (month is not null)
             {
@@ -74,15 +81,17 @@ static class ExpenseEndpoints
             return Results.Ok(expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList());
         });
 
-        group.MapPost("", async (ExpenseRequest request, AppDbContext db) =>
+        group.MapPost("", async (ExpenseRequest request, AppDbContext db, ClaimsPrincipal user) =>
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
             var errors = ExpenseValidation.Validate(request);
             if (errors.Count > 0)
             {
                 return Results.ValidationProblem(errors);
             }
 
-            var expense = new Expense { Title = request.Title, Amount = request.Amount, Category = request.Category, Date = request.Date };
+            var expense = new Expense { Title = request.Title, Amount = request.Amount, Category = request.Category, Date = request.Date, UserId = userId };
             db.Expenses.Add(expense);
 
             await db.SaveChangesAsync();
@@ -90,15 +99,17 @@ static class ExpenseEndpoints
             return Results.Created($"/expenses/{expense.Id}", ExpenseResponse.From(expense));
         });
 
-        group.MapPut("/{id}", async (int id, ExpenseRequest request, AppDbContext db) =>
+        group.MapPut("/{id}", async (int id, ExpenseRequest request, AppDbContext db, ClaimsPrincipal user) =>
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
             var errors = ExpenseValidation.Validate(request);
             if (errors.Count > 0)
             {
                 return Results.ValidationProblem(errors);
             }
 
-            var expense = await db.Expenses.FindAsync(id);
+            var expense = await db.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
             if (expense is null)
             {
                 return Results.NotFound();
@@ -114,9 +125,11 @@ static class ExpenseEndpoints
             return Results.NoContent();
         });
 
-        group.MapDelete("/{id}", async (int id, AppDbContext db) =>
+        group.MapDelete("/{id}", async (int id, AppDbContext db, ClaimsPrincipal user) =>
         {
-            var expense = await db.Expenses.FindAsync(id);
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            var expense = await db.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
 
             if (expense is null)
             {

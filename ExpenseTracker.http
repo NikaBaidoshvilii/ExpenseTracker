@@ -41,7 +41,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{ExpenseTracker_HostAddress}}/expenses/4
+PUT {{ExpenseTracker_HostAddress}}/expenses/1
 Content-Type: application/json
 
 {
