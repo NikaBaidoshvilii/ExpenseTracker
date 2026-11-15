@@ -3,6 +3,7 @@ import SummaryChart from "./components/SummaryChart";
 import ExpenseList from "./components/ExpenseList";
 import Filters from "./components/Filters";
 import ExpenseForm from "./components/ExpenseForm";
+import AuthForm from "./components/AuthForm";
 import type { CategoryTotal, ExpenseRequest, ExpenseResponse, FormValues, UserInfo, ValidationProblem } from "./types";
 
 const emptyForm: FormValues = { title: "", amount: "", category: "", date: "" };
@@ -17,6 +18,9 @@ function App() {
     const [filterCategory, setFilterCategory] = useState("");
     const [summary, setSummary] = useState<CategoryTotal[]>([]);
     const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [authErrors, setAuthErrors] = useState<string[]>([]);
 
     useEffect(() => {
         fetch("/auth/manage/info").then(async (response) => {
@@ -24,8 +28,8 @@ function App() {
                 const info: UserInfo = await response.json();
                 setUserEmail(info.email);
             }
-        })
-    }), []
+        });
+    }, []);
 
     useEffect(() => {
         fetch(`/expenses${getFilterQuery()}`)
@@ -118,16 +122,41 @@ function App() {
         setErrors([]);
     }
 
+    function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
+        e.preventDefault();
+        console.log("login", email, password);
+    }
+
+    function handleRegister() {
+        console.log("register", email, password);
+    }
+
     function resetForm() {
         setForm(emptyForm);
         setErrors([]);
         setEditingId(null);
     }
 
+    if (userEmail === null) {
+        return (
+            <>
+                <h1>Expense Tracker</h1>
+                <AuthForm 
+                    email={email}
+                    password={password}
+                    onEmailChange={setEmail}
+                    onPasswordChange={setPassword}
+                    errors={authErrors}
+                    onLogin={handleLogin}
+                    onRegister={handleRegister}
+                />
+            </>
+        );
+    }
+
     return (
         <>
             <h1>Expense Tracker</h1>
-            <p>{userEmail ?? "Not logged in"}</p>
             <ExpenseForm
                 values={form}
                 onChange={setForm}
