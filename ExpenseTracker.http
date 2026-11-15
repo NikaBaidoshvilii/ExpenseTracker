@@ -49,3 +49,23 @@ Content-Type: application/json
 ###
 
 DELETE {{ExpenseTracker_HostAddress}}/expenses/7
+
+###
+
+POST {{ExpenseTracker_HostAddress}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nika@test.com",
+  "password": "Test123!"
+}
+
+###
+
+POST {{ExpenseTracker_HostAddress}}/auth/login?useCookies=true
+Content-Type: application/json
+
+{
+  "email": "nika@test.com",
+  "password": "Test123!"
+}
