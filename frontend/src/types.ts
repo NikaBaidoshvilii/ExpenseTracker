@@ -24,3 +24,7 @@ export interface FormValues {
 export interface ValidationProblem {
     errors: Record<string, string[]>;
 }
+
+export interface UserInfo {
+    email: string;
+}
