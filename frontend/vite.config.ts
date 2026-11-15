@@ -6,7 +6,8 @@ export default defineConfig({
     plugins: [react()],
     server: {
         proxy: {
-            "/expenses": "http://localhost:5254"
+            "/expenses": "http://localhost:5254",
+            "/auth": "http://localhost:5254"
         }
     },
     build: {
