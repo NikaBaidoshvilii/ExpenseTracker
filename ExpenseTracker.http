@@ -8,6 +8,11 @@ GET {{ExpenseTracker_HostAddress}}/expenses
 
 ###
 
+# @no-cookie-jar
+GET {{ExpenseTracker_HostAddress}}/expenses
+
+###
+
 GET {{ExpenseTracker_HostAddress}}/expenses/4
 
 ###

@@ -4,7 +4,9 @@ static class ExpenseEndpoints
 {
     public static void MapExpenseEndpoints(this WebApplication app)
     {
-        app.MapGet("/expenses", async (int? month, int? year, string? category, AppDbContext db) =>
+        var group = app.MapGroup("/expenses").RequireAuthorization();
+        
+        group.MapGet("", async (int? month, int? year, string? category, AppDbContext db) =>
         {
             if (month is not null && (month < 1 || month > 12))
             {
@@ -34,7 +36,7 @@ static class ExpenseEndpoints
             return Results.Ok(await query.Select(e => ExpenseResponse.From(e)).ToListAsync());
         });
 
-        app.MapGet("/expenses/{id}", async (int id, AppDbContext db) =>
+        group.MapGet("/{id}", async (int id, AppDbContext db) =>
         {
             var expense = await db.Expenses.FindAsync(id);
 
@@ -46,7 +48,7 @@ static class ExpenseEndpoints
             return Results.Ok(ExpenseResponse.From(expense));
         });
 
-        app.MapGet("/expenses/summary", async (int? month, int? year, AppDbContext db) =>
+        group.MapGet("/summary", async (int? month, int? year, AppDbContext db) =>
         {
             if (month is not null && (month < 1 || month > 12))
             {
@@ -72,7 +74,7 @@ static class ExpenseEndpoints
             return Results.Ok(expenses.GroupBy(e => e.Category.ToLower()).Select(g => new CategoryTotal(g.Key, g.Sum(e => e.Amount))).ToList());
         });
 
-        app.MapPost("/expenses", async (ExpenseRequest request, AppDbContext db) =>
+        group.MapPost("", async (ExpenseRequest request, AppDbContext db) =>
         {
             var errors = ExpenseValidation.Validate(request);
             if (errors.Count > 0)
@@ -88,7 +90,7 @@ static class ExpenseEndpoints
             return Results.Created($"/expenses/{expense.Id}", ExpenseResponse.From(expense));
         });
 
-        app.MapPut("/expenses/{id}", async (int id, ExpenseRequest request, AppDbContext db) =>
+        group.MapPut("/{id}", async (int id, ExpenseRequest request, AppDbContext db) =>
         {
             var errors = ExpenseValidation.Validate(request);
             if (errors.Count > 0)
@@ -112,7 +114,7 @@ static class ExpenseEndpoints
             return Results.NoContent();
         });
 
-        app.MapDelete("/expenses/{id}", async (int id, AppDbContext db) =>
+        group.MapDelete("/{id}", async (int id, AppDbContext db) =>
         {
             var expense = await db.Expenses.FindAsync(id);
 
