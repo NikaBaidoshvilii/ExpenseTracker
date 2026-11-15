@@ -14,7 +14,7 @@ interface AuthFormProps {
 function AuthForm({ email, password, onEmailChange, onPasswordChange, errors, onLogin, onRegister }: AuthFormProps) {
     return (
         <>
-            <ul className="errors">
+            <ul className="errors auth-errors">
                 {errors.map((error) => (
                     <li key={error}>{error}</li>
                 ))}

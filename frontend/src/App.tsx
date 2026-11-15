@@ -32,6 +32,8 @@ function App() {
     }, []);
 
     useEffect(() => {
+        if (userEmail === null) return;
+
         fetch(`/expenses${getFilterQuery()}`)
             .then((response) => response.json())
             .then((data) => setExpenses(data));
@@ -46,9 +48,11 @@ function App() {
             const text = params.toString();
             return text ? `?${text}` : "";
         }
-    }, [filterMonth, filterYear, filterCategory]);
+    }, [filterMonth, filterYear, filterCategory, userEmail]);
 
     useEffect(() => {
+        if (userEmail === null) return;
+
         fetch(`/expenses/summary${getFilterQuery()}`)
             .then((response) => response.json())
             .then((data) => setSummary(data));
@@ -62,7 +66,7 @@ function App() {
             const text = params.toString();
             return text ? `?${text}` : "";
         }
-    }, [filterMonth, filterYear, expenses]);
+    }, [filterMonth, filterYear, expenses, userEmail]);
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -122,13 +126,42 @@ function App() {
         setErrors([]);
     }
 
-    function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
-        console.log("login", email, password);
+    async function logIn() {
+        const response = await fetch("/auth/login?useCookies=true", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            setAuthErrors(["Wrong email or password."]);
+            return;
+        }
+
+        setUserEmail(email);
+        setPassword("");
+        setAuthErrors([]);
     }
 
-    function handleRegister() {
-        console.log("register", email, password);
+    async function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
+        e.preventDefault();
+        await logIn();
+    }
+
+    async function handleRegister() {
+        const response = await fetch("/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            const problem: ValidationProblem = await response.json();
+            setAuthErrors(Object.values(problem.errors).flat());
+            return;
+        }
+
+        await logIn();
     }
 
     function resetForm() {
@@ -140,7 +173,7 @@ function App() {
     if (userEmail === null) {
         return (
             <>
-                <h1>Expense Tracker</h1>
+                <h1 className="auth-title">Expense Tracker</h1>
                 <AuthForm 
                     email={email}
                     password={password}
