@@ -8,6 +8,23 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();
 
+    private async Task LoginAsync()
+    {
+        var email = $"{Guid.NewGuid()}@test.com";
+
+        await _client.PostAsJsonAsync("/auth/register", new
+        {
+            email = email,
+            password = "Test123!"
+        });
+
+        await _client.PostAsJsonAsync("/auth/login?useCookies=true", new
+        {
+            email = email,
+            password = "Test123!"
+        });
+    }
+
     [Fact]
     public async Task Ping_ReturnsPong()
     {
@@ -23,6 +40,8 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
     [Fact]
     public async Task CreateExpense_ValidData_ReturnsCreated()
     {
+        await LoginAsync();
+
         var response = await _client.PostAsJsonAsync("/expenses", new
         {
             title = "Groceries",
@@ -37,6 +56,8 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
     [Fact]
     public async Task CreateExpense_EmptyTitle_ReturnsBadRequest()
     {
+        await LoginAsync();
+
         var response = await _client.PostAsJsonAsync("/expenses", new
         {
             title = "",
@@ -51,6 +72,8 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
     [Fact]
     public async Task GetExpense_AfterCreate_ReturnsIt()
     {
+        await LoginAsync();
+
         var createdResponse = await _client.PostAsJsonAsync("/expenses", new
         {
             title = "Groceries",
@@ -73,6 +96,8 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
     [Fact]
     public async Task GetExpense_NonExistentId_ReturnsNotFound()
     {
+        await LoginAsync();
+
         var response = await _client.GetAsync("/expenses/99999");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -80,6 +105,8 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
     [Fact]
     public async Task DeleteExpense_ThenGet_ReturnsNotFound()
     {
+        await LoginAsync();
+
         var createdResponse = await _client.PostAsJsonAsync("/expenses", new
         {
             title = "Groceries",
