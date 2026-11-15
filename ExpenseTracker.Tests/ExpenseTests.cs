@@ -124,4 +124,33 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
         var response = await _client.GetAsync($"/expenses/{created.Id}");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GetExpenses_NotLoggedIn_ReturnsUnauthorized()
+    {
+        var response = await _client.GetAsync("/expenses");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetExpense_OtherUsersExpense_ReturnsNotFound()
+    {
+        await LoginAsync();
+
+        var createdResponse = await _client.PostAsJsonAsync("/expenses", new
+        {
+            title = "Groceries",
+            amount = 50,
+            category = "Food",
+            date = "2026-11-01"
+        });
+
+        var created = await createdResponse.Content.ReadFromJsonAsync<ExpenseResponse>();
+        Assert.NotNull(created);
+        
+        await LoginAsync();
+
+        var getResponse = await _client.GetAsync($"/expenses/{created.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode); 
+    }
 }
