@@ -101,6 +101,11 @@ function App() {
             body: JSON.stringify(expense),
         });
 
+        if (response.status === 401) {
+            clearSession();
+            return;
+        }
+
         if (!response.ok) {
             const problem: ValidationProblem = await response.json();
             setErrors(Object.values(problem.errors).flat());
@@ -122,6 +127,11 @@ function App() {
         if (!confirm("Delete this expense?")) return;
 
         const response = await fetch(`/expenses/${id}`, { method: "DELETE" });
+
+        if (response.status === 401) {
+            clearSession();
+            return;
+        }
 
         if (response.ok) {
             setExpenses(expenses.filter((expense) => expense.id !== id));
@@ -178,13 +188,16 @@ function App() {
         await logIn();
     }
 
-    async function handleLogout() {
-        await fetch("/auth/logout", { method: "POST" });
-
+    function clearSession() {
         setUserEmail(null);
         setExpenses([]);
         setSummary([]);
         resetForm();
+    }
+
+    async function handleLogout() {
+        await fetch("/auth/logout", { method: "POST" });
+        clearSession();
     }
 
     function resetForm() {
