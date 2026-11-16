@@ -34,9 +34,16 @@ function App() {
     useEffect(() => {
         if (userEmail === null) return;
 
-        fetch(`/expenses${getFilterQuery()}`)
-            .then((response) => response.json())
-            .then((data) => setExpenses(data));
+        fetch(`/expenses${getFilterQuery()}`).then(async (response) => {
+            if (response.status === 401) {
+                setUserEmail(null);
+                setExpenses([]);
+                return;
+            }
+
+            const data: ExpenseResponse[] = await response.json();
+            setExpenses(data);
+        });
 
         function getFilterQuery() {
             const params = new URLSearchParams();
@@ -53,9 +60,16 @@ function App() {
     useEffect(() => {
         if (userEmail === null) return;
 
-        fetch(`/expenses/summary${getFilterQuery()}`)
-            .then((response) => response.json())
-            .then((data) => setSummary(data));
+        fetch(`/expenses/summary${getFilterQuery()}`).then(async (response) => {
+            if (response.status === 401) {
+                setUserEmail(null);
+                setSummary([]);
+                return;
+            }
+
+            const data: CategoryTotal[] = await response.json();
+            setSummary(data);
+        });
 
         function getFilterQuery() {
             const params = new URLSearchParams();
