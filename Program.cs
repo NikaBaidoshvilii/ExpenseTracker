@@ -38,9 +38,9 @@ app.MapExpenseEndpoints();
 
 app.MapGroup("/auth").MapIdentityApi<IdentityUser>();
 
-app.MapPost("/auth/logout", async (SignInManager<IdentityUser> SignInManager) =>
+app.MapPost("/auth/logout", async (SignInManager<IdentityUser> signInManager) =>
 {
-    await SignInManager.SignOutAsync();
+    await signInManager.SignOutAsync();
     return Results.Ok();
 }).RequireAuthorization();
 

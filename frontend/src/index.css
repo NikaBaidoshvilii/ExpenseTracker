@@ -33,3 +33,11 @@ button {
 .submit-button:hover {
     background: #3a6b94;
 }
+
+.user-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}

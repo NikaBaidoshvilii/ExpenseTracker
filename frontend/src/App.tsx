@@ -164,6 +164,15 @@ function App() {
         await logIn();
     }
 
+    async function handleLogout() {
+        await fetch("/auth/logout", { method: "POST" });
+
+        setUserEmail(null);
+        setExpenses([]);
+        setSummary([]);
+        resetForm();
+    }
+
     function resetForm() {
         setForm(emptyForm);
         setErrors([]);
@@ -174,7 +183,7 @@ function App() {
         return (
             <>
                 <h1 className="auth-title">Expense Tracker</h1>
-                <AuthForm 
+                <AuthForm
                     email={email}
                     password={password}
                     onEmailChange={setEmail}
@@ -190,6 +199,12 @@ function App() {
     return (
         <>
             <h1>Expense Tracker</h1>
+            <div className="user-bar">
+                <span>{userEmail}</span>
+                <button type="button" onClick={handleLogout}>
+                    Log out
+                </button>
+            </div>
             <ExpenseForm
                 values={form}
                 onChange={setForm}
