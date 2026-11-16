@@ -38,6 +38,12 @@ app.MapExpenseEndpoints();
 
 app.MapGroup("/auth").MapIdentityApi<IdentityUser>();
 
+app.MapPost("/auth/logout", async (SignInManager<IdentityUser> SignInManager) =>
+{
+    await SignInManager.SignOutAsync();
+    return Results.Ok();
+}).RequireAuthorization();
+
 app.Run();
 
 public partial class Program { }

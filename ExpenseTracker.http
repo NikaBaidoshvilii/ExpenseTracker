@@ -74,3 +74,11 @@ Content-Type: application/json
   "email": "nika@test.com",
   "password": "Test123!"
 }
+
+###
+
+GET {{ExpenseTracker_HostAddress}}/auth/manage/info
+
+###
+
+POST {{ExpenseTracker_HostAddress}}/auth/logout
