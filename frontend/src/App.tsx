@@ -21,14 +21,17 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authErrors, setAuthErrors] = useState<string[]>([]);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    fetch("/auth/manage/info").then(async (response) => {
-      if (response.ok) {
-        const info: UserInfo = await response.json();
-        setUserEmail(info.email);
-      }
-    });
+    fetch("/auth/manage/info")
+      .then(async (response) => {
+        if (response.ok) {
+          const info: UserInfo = await response.json();
+          setUserEmail(info.email);
+        }
+      })
+      .finally(() => setIsCheckingAuth(false));
   }, []);
 
   useEffect(() => {
@@ -204,6 +207,10 @@ function App() {
     setForm(emptyForm);
     setErrors([]);
     setEditingId(null);
+  }
+
+  if (isCheckingAuth) {
+    return <p className="loading">Loading...</p>;
   }
 
   if (userEmail === null) {
