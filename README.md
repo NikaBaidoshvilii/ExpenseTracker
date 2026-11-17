@@ -1,5 +1,7 @@
 # Expense Tracker
 
+[![CI](https://github.com/NikaBaidoshvilii/ExpenseTracker/actions/workflows/ci.yml/badge.svg)](https://github.com/NikaBaidoshvilii/ExpenseTracker/actions/workflows/ci.yml)
+
 A small full-stack app for tracking personal expenses: a REST API built with ASP.NET Core and EF Core (PostgreSQL), and a React + TypeScript frontend built with Vite.
 
 **Live demo:** [expensetracker-oet7.onrender.com](https://expensetracker-oet7.onrender.com/)
@@ -53,6 +55,8 @@ dotnet test ExpenseTracker.Tests
 ```
 
 They cover the health check, creating expenses (valid and invalid data), getting one by id, a missing id (404) and deleting. They also check that logged-out users get 401 and that users can't see each other's expenses.
+
+GitHub Actions (`.github/workflows/ci.yml`) runs these tests on every push and pull request to `main`, using a PostgreSQL service container. A second job checks the frontend: Prettier formatting, ESLint and the production build.
 
 ## Endpoints
 | Method | Path | Description |
