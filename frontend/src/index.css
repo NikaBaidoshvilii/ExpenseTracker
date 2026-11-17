@@ -1,43 +1,43 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: system-ui, sans-serif;
-    background-color: #f5f6f8;
-    color: #222;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 16px;
+  font-family: system-ui, sans-serif;
+  background-color: #f5f6f8;
+  color: #222;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 input,
 select,
 button {
-    padding: 8px 12px;
-    border: 1px solid #c9ccd1;
-    border-radius: 6px;
-    font-size: 1rem;
+  padding: 8px 12px;
+  border: 1px solid #c9ccd1;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .submit-button {
-    background: steelblue;
-    color: white;
-    border-color: steelblue;
+  background: steelblue;
+  color: white;
+  border-color: steelblue;
 }
 
 .submit-button:hover {
-    background: #3a6b94;
+  background: #3a6b94;
 }
 
 .user-bar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
 }

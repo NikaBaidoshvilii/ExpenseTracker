@@ -1,12 +1,12 @@
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 320px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .auth-title,
 .auth-errors {
-    text-align: center;
+  text-align: center;
 }
