@@ -8,6 +8,9 @@ import type { CategoryTotal, ExpenseRequest, ExpenseResponse, FormValues, UserIn
 
 const emptyForm: FormValues = { title: "", amount: "", category: "", date: "" };
 
+const DEMO_EMAIL = "demo@expensetracker.dev";
+const DEMO_PASSWORD = "Demo123!";
+
 function App() {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
   const [form, setForm] = useState<FormValues>(emptyForm);
@@ -153,11 +156,11 @@ function App() {
     setErrors([]);
   }
 
-  async function logIn() {
+  async function logIn(loginEmail: string, loginPassword: string) {
     const response = await fetch("/auth/login?useCookies=true", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: loginEmail, password: loginPassword }),
     });
 
     if (!response.ok) {
@@ -165,14 +168,18 @@ function App() {
       return;
     }
 
-    setUserEmail(email);
+    setUserEmail(loginEmail);
     setPassword("");
     setAuthErrors([]);
   }
 
   async function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    await logIn();
+    await logIn(email, password);
+  }
+
+  async function handleDemoLogin() {
+    await logIn(DEMO_EMAIL, DEMO_PASSWORD);
   }
 
   async function handleRegister() {
@@ -188,7 +195,7 @@ function App() {
       return;
     }
 
-    await logIn();
+    await logIn(email, password);
   }
 
   function clearSession() {
@@ -225,6 +232,7 @@ function App() {
           errors={authErrors}
           onLogin={handleLogin}
           onRegister={handleRegister}
+          onDemoLogin={handleDemoLogin}
         />
       </>
     );

@@ -9,9 +9,19 @@ interface AuthFormProps {
   errors: string[];
   onLogin: (e: React.SubmitEvent<HTMLFormElement>) => void;
   onRegister: () => void;
+  onDemoLogin: () => void;
 }
 
-function AuthForm({ email, password, onEmailChange, onPasswordChange, errors, onLogin, onRegister }: AuthFormProps) {
+function AuthForm({
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  errors,
+  onLogin,
+  onRegister,
+  onDemoLogin,
+}: AuthFormProps) {
   return (
     <>
       <ul className="errors auth-errors">
@@ -32,6 +42,9 @@ function AuthForm({ email, password, onEmailChange, onPasswordChange, errors, on
         </button>
         <button type="button" onClick={onRegister}>
           Register
+        </button>
+        <button type="button" onClick={onDemoLogin}>
+          Try the demo
         </button>
       </form>
     </>
