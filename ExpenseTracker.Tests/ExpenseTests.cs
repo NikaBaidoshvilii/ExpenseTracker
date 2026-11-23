@@ -153,4 +153,22 @@ public class ExpenseTests(TestFactory factory) : IClassFixture<TestFactory>
         var getResponse = await _client.GetAsync($"/expenses/{created.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode); 
     }
+
+    [Fact]
+    public async Task ChangePassword_DemoUser_ReturnsForbidden()
+    {
+        await _client.PostAsJsonAsync("/auth/login?useCookies=true", new
+        {
+            email = DemoSeeder.DemoEmail,
+            password = DemoSeeder.DemoPassword
+        });
+
+        var response = await _client.PostAsJsonAsync("/auth/manage/info", new
+        {
+            oldPassword = DemoSeeder.DemoPassword,
+            newPassword = "Hacked123!"
+        });
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
 }
