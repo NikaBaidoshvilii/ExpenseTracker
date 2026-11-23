@@ -41,7 +41,18 @@ app.MapGet("/ping", () => "pong");
 
 app.MapExpenseEndpoints();
 
-app.MapGroup("/auth").MapIdentityApi<IdentityUser>();
+app.MapGroup("/auth").AddEndpointFilter(async (context, next) =>
+{
+    var request = context.HttpContext.Request;
+    var username = context.HttpContext.User.Identity?.Name;
+
+    if (request.Method == "POST" && request.Path.StartsWithSegments("/auth/manage") && username == DemoSeeder.DemoEmail)
+    {
+        return Results.Problem("The demo account can't be changed.", statusCode: 403);
+    }
+
+    return await next(context);
+}).MapIdentityApi<IdentityUser>();
 
 app.MapPost("/auth/logout", async (SignInManager<IdentityUser> signInManager) =>
 {

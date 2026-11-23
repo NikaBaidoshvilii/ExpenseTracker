@@ -82,3 +82,17 @@ GET {{ExpenseTracker_HostAddress}}/auth/manage/info
 ###
 
 POST {{ExpenseTracker_HostAddress}}/auth/logout
+
+###
+
+POST {{ExpenseTracker_HostAddress}}/auth/login?useCookies=true
+Content-Type: application/json
+
+{ "email": "demo@expensetracker.dev", "password": "Demo123!" }
+
+###
+
+POST {{ExpenseTracker_HostAddress}}/auth/manage/info
+Content-Type: application/json
+
+{ "oldPassword": "Demo123!", "newPassword": "Hacked123!" }
