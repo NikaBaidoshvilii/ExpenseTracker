@@ -7,10 +7,13 @@ A small full-stack app for tracking personal expenses: a REST API built with ASP
 **Live demo:** [expensetracker-oet7.onrender.com](https://expensetracker-oet7.onrender.com/)
 *(Hosted on a free tier, so the first load can take up to a minute to wake up. Data is stored in a PostgreSQL database on Neon.)*
 
+Click **Try the demo** on the login page to look around with sample data, no registration needed. The demo account can't change its password or account settings, so it stays available for everyone.
+
 ![Expense Tracker](docs/screenshot.png)
 
 ## Features
 - Register, log in and log out; each user only sees their own expenses
+- One-click demo account with sample expenses, created automatically on startup
 - Create, read, update and delete expenses
 - Filter by month, year and category
 - Spending summary per category, shown as a bar chart
@@ -21,7 +24,7 @@ A small full-stack app for tracking personal expenses: a REST API built with ASP
 You need the .NET SDK (10.x), Node.js (22 or newer) and Docker Desktop.
 
 1. Start the local PostgreSQL database (in the root folder): `docker compose up -d`
-   The app creates the tables itself on startup.
+   The app creates the tables and the demo account (`demo@expensetracker.dev` / `Demo123!`) itself on startup.
 2. Build the frontend (in the `frontend` folder):
    ```
    npm ci
@@ -41,7 +44,7 @@ For live reload while working on the React app, run both:
 Vite forwards `/expenses` and `/auth` requests to the API, so no extra setup is needed.
 
 ## Project structure
-- `Endpoints/`, `Models/`, `Data/`, `Migrations/`: the ASP.NET Core API and database
+- `Endpoints/`, `Models/`, `Data/`, `Migrations/`: the ASP.NET Core API and database (`Data/DemoSeeder.cs` creates the demo account)
 - `frontend/src/App.tsx`: app state, API calls and handlers
 - `frontend/src/components/`: `ExpenseForm`, `Filters`, `ExpenseList`, `SummaryChart`, `AuthForm`, each with its own CSS file
 - `frontend/src/types.ts`: shared TypeScript types matching the API
@@ -54,7 +57,7 @@ Automated API tests use xUnit and `WebApplicationFactory`. Each test run starts 
 dotnet test ExpenseTracker.Tests
 ```
 
-They cover the health check, creating expenses (valid and invalid data), getting one by id, a missing id (404) and deleting. They also check that logged-out users get 401 and that users can't see each other's expenses.
+They cover the health check, creating expenses (valid and invalid data), getting one by id, a missing id (404) and deleting. They also check that logged-out users get 401, that users can't see each other's expenses, and that the demo account can't change its password (403).
 
 GitHub Actions (`.github/workflows/ci.yml`) runs these tests on every push and pull request to `main`, using a PostgreSQL service container. A second job checks the frontend: Prettier formatting, ESLint and the production build.
 
@@ -80,4 +83,4 @@ All `/expenses` endpoints require login.
 - Docker Compose for the local database; Neon for the production database
 - React 19 and TypeScript, built with Vite
 - xUnit and `WebApplicationFactory` for integration tests
-- Docker multi-stage build: a Node stage builds the React app, a .NET stage publishes the API, and a small runtime image serves both. Deployed on Render, which rebuilds on every push to `main`.
+- Docker multi-stage build: a Node stage builds the React app, a .NET stage publishes the API, and a small runtime image serves both. Deployed on Render, which rebuilds after each push to `main` once CI has passed.
