@@ -21,7 +21,7 @@ Click **Try the demo** on the login page to look around with sample data, no reg
 - Responsive layout that works on a phone
 
 ## Run it
-You need the .NET SDK (10.x), Node.js (22 or newer) and Docker Desktop.
+You need the .NET SDK (10.x), Node.js (26 or newer) and Docker Desktop.
 
 1. Start the local PostgreSQL database (in the root folder): `docker compose up -d`
    The app creates the tables and the demo account (`demo@expensetracker.dev` / `Demo123!`) itself on startup.
