@@ -3,11 +3,18 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
-class AppDbContext : IdentityDbContext<IdentityUser>, IDataProtectionKeyContext
+class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<IdentityUser>(options), IDataProtectionKeyContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
     public DbSet<Expense> Expenses => Set<Expense>();
-
+    public DbSet<Budget> Budgets => Set<Budget>();
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Budget>()
+            .HasIndex(b => new { b.UserId, b.Category })
+            .IsUnique();
+    }
 }
